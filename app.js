@@ -1,8 +1,9 @@
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const path = require("path");
+const bodyParser = require("body-parser");
 
+const app = express();
 require("dotenv").config();
 
 app.use(
@@ -13,6 +14,8 @@ app.use(
 
 app.use(express.static("public"));
 app.use(express.json());
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
