@@ -3,15 +3,47 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdn.liche.io/js/liche-sdk-0.0.1.js"
+      type="application/javascript"
+    ></script>
     <title>Product Page</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <script>
+      LicheSDK.init();
+
+      function onClickPayment() {
+        LicheSDK.requestBNPL({
+          // Store ClientKey
+          clientKey: "ck_test_xhfJqBVZD9fYpmijw73DKuNZZMH",
+          sellerCode: "seller_n1kpYZ9xAjmbA",
+          callbackUrl: "http://localhost:19609/callback.html",
+          product: {
+            name: "테스트 상품",
+            quantity: 1,
+            goodsCode: "M323060020000",
+            brandName: "Awesomebrand",
+          },
+          partner: {
+            orderKey: Date.now().toString(),
+            customerKey: Date.now().toString(),
+          },
+          customer: {
+            name: "조영완",
+            birth: "19891222",
+            genderDigit: 1,
+            phone: "01031180973",
+          },
+          installmentPlan: 24,
+          installmentAmount: 19900,
+        });
+      }
+    </script>
     <h1></h1>
     <p>꿈꾸던 그 모든 것, Mac과 함께 현실로.</p>
     <img src="macbook.png" alt="Amazing Product" />
-    <button onclick="window.location.href='http://localhost:19601'">
-      BNPL결제하기
-    </button>
+    <button onclick="onClickPayment()">BNPL로 구매하기</button>
   </body>
 </html>
