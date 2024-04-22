@@ -11,10 +11,49 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <h1></h1>
+    <p>꿈꾸던 그 모든 것, Mac과 함께 현실로.</p>
+    <img src="macbook.png" alt="Amazing Product" />
+    <form id="installmentForm">
+      <div id="paymentBar"></div>
+      <button type="button" onclick="onClickPayment()">BNPL로 구매하기</button>
+    </form>
     <script>
+      const productPrices = [
+        { installmentPlan: 12, installmentAmount: 100000 },
+        { installmentPlan: 24, installmentAmount: 50000 },
+        { installmentPlan: 36, installmentAmount: 33333 },
+        { installmentPlan: 48, installmentAmount: 25000 },
+        { installmentPlan: 60, installmentAmount: 20000 },
+      ];
+      const paymentBar = document.getElementById("paymentBar");
+
+      productPrices.forEach((plan, index) => {
+        const label = document.createElement("label");
+        const radioInput = document.createElement("input");
+        radioInput.type = "radio";
+        radioInput.name = "installment-plan";
+        radioInput.value = plan.installmentPlan;
+
+        if (index === 0) {
+          radioInput.checked = true;
+        }
+
+        label.appendChild(radioInput);
+        label.append(
+          `${plan.installmentPlan}개월 (${plan.installmentAmount}원)`
+        );
+
+        paymentBar.appendChild(label);
+      });
+
       LicheSDK.init();
 
       function onClickPayment() {
+        const selectedPlan = document.querySelector(
+          'input[name="installment-plan"]:checked'
+        ).value;
+
         LicheSDK.requestBNPL({
           // Store ClientKey
           clientKey: "ck_test_xhfJqBVZD9fYpmijw73DKuNZZMH",
@@ -36,14 +75,10 @@
             genderDigit: 1,
             phone: "01031180973",
           },
-          installmentPlan: 24,
+          installmentPlan: selectedPlan,
           installmentAmount: 19900,
         });
       }
     </script>
-    <h1></h1>
-    <p>꿈꾸던 그 모든 것, Mac과 함께 현실로.</p>
-    <img src="macbook.png" alt="Amazing Product" />
-    <button onclick="onClickPayment()">BNPL로 구매하기</button>
   </body>
 </html>
