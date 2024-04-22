@@ -52,19 +52,35 @@
 
       document.addEventListener("DOMContentLoaded", function () {
         const queryParams = parseQuery(window.location.search);
-        const detailsContainer = document.getElementById("orderDetails");
+        const encodedData = queryParams.data;
+        const decodedData = atob(encodedData);
+        const json = decodeURIComponent(decodedData);
+        const data = JSON.parse(json);
 
-        detailsContainer.innerHTML = `
-        <p><span class="strong">상태:</span> ${queryParams.status || "미정"}</p>
-        <p><span class="strong">메시지:</span> ${queryParams.message || "메시지 없음"}</p>
-        <p><span class="strong">제품명:</span> ${queryParams.productName || "제품명 없음"}</p>
-        <p><span class="strong">제품 가격:</span> ${queryParams.productPrice || "가격 정보 없음"}</p>
-        <p><span class="strong">총합계:</span> ${queryParams.grandTotal || "계산되지 않음"}</p>
-        <p><span class="strong">할부 계획:</span> ${queryParams.installmentPlan || "계획 없음"}개월</p>
-        <p><span class="strong">월별 납부액:</span> ${queryParams.installmentAmount || "정보 없음"}</p>
-        <p><span class="strong">배송지:</span> ${queryParams.shippingName || "이름 없음"}, ${queryParams.shippingPhone || "전화번호 없음"}, ${queryParams.shippingAddress || "주소 없음"}, ${queryParams.shippingPostalCode || "우편번호 없음"}</p>
-        <p><span class="strong">배송 메모:</span> ${queryParams.shippingMemo || "메모 없음"}</p>
-      `;
+        const grandTotal = data.installmentAmount * data.installmentPlan;
+
+        var htmlString = `
+        <p><span class="strong">상태:</span> ${data.status || "미정"}</p>
+        <p><span class="strong">메시지:</span> ${data.reason || "메시지 없음"}</p>
+        `;
+
+        switch (data.status) {
+          case "SUCCESS":
+            htmlString += `
+          <p><span class="strong">주문 번호:</span> ${data.orderNo || "주문 번호 없음"}</p>
+          <p><span class="strong">주문 키:</span> ${data.orderKey || "제품명 없음"}</p>
+          <p><span class="strong">고객키 키:</span> ${data.customerKey || "제품명 없음"}</p>
+          <p><span class="strong">제품명:</span> ${data.productName || "제품명 없음"}</p>
+          <p><span class="strong">총 분납 금액:</span> ${grandTotal || "계산되지 않음"}</p>
+          <p><span class="strong">할부 계획:</span> ${data.installmentPlan || "계획 없음"}개월</p>
+          <p><span class="strong">월 분납 금액:</span> ${data.installmentAmount || "정보 없음"}</p>
+          <p><span class="strong">배송지:</span> ${data.recipientName || "이름 없음"}, ${data.recipientPhone || "전화번호 없음"}, ${data.address || "주소 없음"}, (${data.postalCode || "우편번호 없음"})</p>
+          <p><span class="strong">배송 메모:</span> ${data.shippingMemo || "메모 없음"}</p>`;
+            break;
+        }
+
+        const detailsContainer = document.getElementById("orderDetails");
+        detailsContainer.innerHTML = htmlString;
       });
     </script>
   </body>
